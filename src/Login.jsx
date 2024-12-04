@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
 import { FaUser, FaLock } from 'react-icons/fa'; // Import icons from react-icons
-
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-
 import { API_ENDPOINT } from './Api';
 
 function Login() {
@@ -26,7 +24,7 @@ function Login() {
     const token = localStorage.getItem('token');
     if (token) {
       setUser({ token }); // Or decode and set user info if needed
-      navigate('/dashboard');
+      navigate('/dashboard'); // Redirect to dashboard if logged in
     }
   };
 
@@ -34,21 +32,26 @@ function Login() {
     fetchUser();
   }, []);
 
-  // Perform login method
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const response = await axios.post(`${API_ENDPOINT}/api/auth/login`, {
         username,
         passwordx: password, // Use password state but send it as passwordx
       });
+      
       localStorage.setItem('token', JSON.stringify(response.data.token)); // Save token
       setUser({ token: response.data.token }); // Optionally set the user data
       setError('');
       setLoading(false);
-      navigate('/dashboard');
+      
+      // Add a delay before redirecting to dashboard
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000); // Wait for 2 seconds before navigating (adjust time as needed)
+  
     } catch (error) {
       console.error('Login Error:', error.response?.data || error.message); // Log backend error
       setError('Invalid username or password');
@@ -69,21 +72,19 @@ function Login() {
           <Col md={6} lg={5}>
             <div className="text-center mb-4">
               <img
-                src="/NCF.jpg" // Reference NCF.jpg in the public folder
+                src="/NCF.jpg"
                 alt="NCF Logo"
                 style={{
                   width: '200px',
                   height: '200px',
-                  borderRadius: '50%', // Circular style
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // 3D effect
+                  borderRadius: '50%',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                 }}
               />
             </div>
             <div className="card shadow" style={{ borderRadius: '10px', padding: '20px' }}>
               <div className="card-body">
-              <h5 className="text-center mb-4 fs-3 fw-bold">
-                Login
-                 </h5>
+                <h5 className="text-center mb-4 fs-3 fw-bold">Login</h5>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="formUsername" className="mb-3">
                     <Form.Label style={{ fontWeight: 'bold' }}>Username:</Form.Label>
