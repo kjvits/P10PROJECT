@@ -26,16 +26,16 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     if (password !== confirmPassword) {
       setError("Passwords don't match!");
       setLoading(false);
       return;
     }
-  
+
     try {
       // Send passwordx instead of password
-      const response = await axios.post(`${API_ENDPOINT}/api/auth/register`, {
+      await axios.post(`${API_ENDPOINT}/api/auth/register`, {
         fullName,
         username,
         passwordx: password,  // Change "password" to "passwordx"
@@ -78,7 +78,7 @@ function Register() {
                 </h5>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="formFullName" className="mb-3">
-                    <Form.Label style={{ fontWeight: 'bold' }}>Fullame:</Form.Label>
+                    <Form.Label style={{ fontWeight: 'bold' }}>Full Name:</Form.Label>
                     <div className="input-group">
                       <span className="input-group-text">
                         <FaUser />
