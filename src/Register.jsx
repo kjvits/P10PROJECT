@@ -26,18 +26,19 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     if (password !== confirmPassword) {
       setError("Passwords don't match!");
       setLoading(false);
       return;
     }
-
+  
     try {
+      // Send passwordx instead of password
       const response = await axios.post(`${API_ENDPOINT}/api/auth/register`, {
         fullName,
         username,
-        password,
+        passwordx: password,  // Change "password" to "passwordx"
       });
       setLoading(false);
       navigate('/login'); // Redirect to login after successful registration
