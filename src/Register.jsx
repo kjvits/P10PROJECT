@@ -16,7 +16,7 @@ import { API_ENDPOINT } from './Api';
 
 function Register() {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState('');
+  const [fullname, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -36,7 +36,7 @@ function Register() {
     try {
       // Send passwordx instead of password
       await axios.post(`${API_ENDPOINT}/api/auth/register`, {
-        fullName,
+        fullname,
         username,
         passwordx: password,  // Change "password" to "passwordx"
       });
