@@ -5,30 +5,26 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa'; // Importing icons
-import { API_ENDPOINT } from './Api';
+import { FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa'; // Icons
 
 function Dashboard() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    /* Verify if User is in Session in LocalStorage */
     useEffect(() => {
-        const fetchDecodedUserID = async () => {
+        const fetchDecodedUserID = () => {
             try {
                 const token = localStorage.getItem('token');
-                
                 if (!token) {
                     navigate('/login');
                     return;
                 }
 
-                const response = JSON.parse(token);
-                const decoded_token = jwtDecode(response.data.token);
-
-                // Set the decoded token as user data
-                setUser(decoded_token);  // Assuming you want to store decoded token in the state
+                const parsedToken = JSON.parse(token);
+                const decodedToken = jwtDecode(parsedToken);
+                setUser(decodedToken);
             } catch (error) {
+                console.error('Token decoding error:', error);
                 navigate('/login');
             }
         };
@@ -36,56 +32,35 @@ function Dashboard() {
         fetchDecodedUserID();
     }, [navigate]);
 
-    /* Logout Function */
-    const handleLogout = async () => {
-        try {
-            localStorage.removeItem('token');
-            navigate('/login');
-        } catch (error) {
-            console.error('Logout failed', error);
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     return (
         <>
-            <Navbar bg="success" data-bs-theme="dark">
+            <Navbar bg="success" variant="dark">
                 <Container>
-                    {/* Move the Navbar brand to the leftmost side */}
-                    <Navbar.Brand href="#home" className="me-auto">
-                        Naga College Foundation, Inc.
-                    </Navbar.Brand>
-
+                    <Navbar.Brand href="#home">Naga College Foundation, Inc.</Navbar.Brand>
                     <Nav className="ms-auto">
                         <Nav.Link href="#users">Users</Nav.Link>
                         <Nav.Link href="#departments">Departments</Nav.Link>
                         <Nav.Link href="#courses">Courses</Nav.Link>
+                        <NavDropdown title={user ? `Hello, ${user.username}` : 'More'} id="user-nav-dropdown">
+                            <NavDropdown.Item href="#">
+                                <FaUser className="me-2" />
+                                Profile
+                            </NavDropdown.Item>
+                            <NavDropdown.Item href="#">
+                                <FaCog className="me-2" />
+                                Settings
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={handleLogout}>
+                                <FaSignOutAlt className="me-2" />
+                                Logout
+                            </NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="ms-auto">
-                            <NavDropdown
-                                title={user ? `Hello, ${user.username}` : 'More'}
-                                id="basic-nav-dropdown"
-                                align="end"
-                                aria-label="User profile menu"
-                            >
-                                {/* User Profile */}
-                                <NavDropdown.Item href="#">
-                                    <FaUser className="me-2" />
-                                    Profile
-                                </NavDropdown.Item>
-                                {/* Settings */}
-                                <NavDropdown.Item href="#">
-                                    <FaCog className="me-2" />
-                                    Settings
-                                </NavDropdown.Item>
-                                {/* Logout */}
-                                <NavDropdown.Item href="#" onClick={handleLogout}>
-                                    <FaSignOutAlt className="me-2" />
-                                    Logout
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
                 </Container>
             </Navbar>
         </>
